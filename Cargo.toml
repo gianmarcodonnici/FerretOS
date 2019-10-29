@@ -5,3 +5,4 @@ authors = ["Gianmarco Donnici <gianmarco.donnici@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+bootloader = "0.8.0"

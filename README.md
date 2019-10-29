@@ -1,7 +1,8 @@
 # FerretOS
 Hobby OS written in Rust.
 
-build with cargo xbuild
+build kernel with cargo xbuild
+build kernel and create boot image with cargo bootimage
 
 Tools used:
 -Rust
