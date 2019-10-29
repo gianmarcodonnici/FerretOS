@@ -1,15 +1,16 @@
 # FerretOS
 Hobby OS written in Rust.
 
-build kernel with cargo xbuild
-build kernel and create boot image with cargo bootimage
+To build a bootable kernel image:
+cargo bootimage
 
 Tools used:
--Rust
--NASM compiler
+- Rust
+- bootimage crate
+- QEMU
 
-Setting up the dev environment:
+## Setting up the dev environment:
 TODO
 
-TODO:
-Write a bootloader
+# TODO List
+- Write a bootloader (preferably UEFI)
