@@ -1,6 +1,8 @@
 # FerretOS
 Hobby OS written in Rust.
 
+build with cargo xbuild
+
 Tools used:
 TODO
 
