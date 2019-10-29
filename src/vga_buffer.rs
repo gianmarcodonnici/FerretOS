@@ -136,6 +136,6 @@ lazy_static! {
     pub static ref WRITER: Writer = Writer {
         column_position: 0,
         color_code: ColorCode::new(Color::Blue, Color::Black),
-        buffer: unsave { &mut *(0xb8000 as *mut Buffer) },
+        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
     };
 }
