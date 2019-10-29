@@ -9,3 +9,6 @@ Tools used:
 
 Setting up the dev environment:
 TODO
+
+TODO:
+Write a bootloader
