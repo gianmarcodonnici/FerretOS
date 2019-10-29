@@ -119,7 +119,7 @@ impl Writer {
      }
 }
 
-// Rust write macro support
+//Rust write macro support
 use core::fmt;
 
 impl fmt::Write for Writer {
@@ -127,4 +127,15 @@ impl fmt::Write for Writer {
         self.write_string(s);
         Ok(())
     }
+}
+
+//Lazy Static instance of writer
+use lazy_static::lazy_static;
+
+lazy_static! {
+    pub static ref WRITER: Writer = Writer {
+        column_position: 0,
+        color_code: ColorCode::new(Color::Blue, Color::Black),
+        buffer: unsave { &mut *(0xb8000 as *mut Buffer) },
+    };
 }
