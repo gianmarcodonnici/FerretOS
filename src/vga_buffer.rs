@@ -131,11 +131,12 @@ impl fmt::Write for Writer {
 
 //Lazy Static instance of writer
 use lazy_static::lazy_static;
+use spin::Mutex;    //use a mutex to make the static writer mutable
 
 lazy_static! {
-    pub static ref WRITER: Writer = Writer {
+    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
         column_position: 0,
         color_code: ColorCode::new(Color::Blue, Color::Black),
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
-    };
+    });
 }
