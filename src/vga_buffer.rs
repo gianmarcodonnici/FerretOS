@@ -1,7 +1,5 @@
 //VGA Buffer implementation
 
-use volatile::Volatile; // used for the buffer, so the compiler doesnt optimize away writes
-
 //Colors
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -51,6 +49,8 @@ const BUFFER_HEIGHT: usize = 25;
 const BUFFER_WIDTH: usize = 80;
 
 //The actual text buffer
+use volatile::Volatile; // used for the buffer, so the compiler doesnt optimize away writes
+
 #[repr(transparent)]
 struct Buffer {
     chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT],
@@ -58,21 +58,21 @@ struct Buffer {
 
 //VGA Buffer writer
 pub struct Writer {
-    column_position: usize,
-    color_code: ColorCode,
-    buffer: &'static mut Buffer,
+    column_position: usize, //Position column of the caret
+    color_code: ColorCode,  //Current color being used
+    buffer: &'static mut Buffer,    //Pointer to vga buffer
 }
 
 impl Writer {
-    pub fn write_byte(&mut self, byte: u8) {
+    pub fn write_byte(&mut self, byte: u8) {    //Write a single char to the vga buffer
         match byte {
             b'\n' => self.new_line(),
             byte => {
-                if self.column_position >= BUFFER_WIDTH {
+                if self.column_position >= BUFFER_WIDTH {   //If caret is at the end of the screen
                     self.new_line()
                 }
 
-                let row = BUFFER_HEIGHT - 1;
+                let row = BUFFER_HEIGHT - 1;    //Write at the last line
                 let col = self.column_position;
 
                 let color_code = self.color_code;
@@ -80,20 +80,20 @@ impl Writer {
                     ascii_character: byte,
                     color_code,
                 });
-                self.column_position += 1;
+                self.column_position += 1;  //Move caret forwards
             }
         }
     }
 
-     fn new_line(&mut self) { // shift all lines up 1, and return caret
+     fn new_line(&mut self) { // shift all lines up 1, and return caret to the left
          for row in 1..BUFFER_HEIGHT {
              for col in 0..BUFFER_WIDTH {
                  let character = self.buffer.chars[row][col].read();
                  self.buffer.chars[row - 1][col].write(character);
              }
          }
-         self.clear_row(BUFFER_HEIGHT - 1);
-         self.column_position = 0;
+         self.clear_row(BUFFER_HEIGHT - 1); //Clear new line
+         self.column_position = 0;  //return caret
      }
 
      fn clear_row(&mut self, row: usize) {
@@ -112,7 +112,7 @@ impl Writer {
              match byte {
                  //Printable asci chars have values from 0x20 to 0x7e
                  0x20..=0x7e | b'\n' => self.write_byte(byte),
-                 //else print a square
+                 //unrecognized character, print a square
                  _ => self.write_byte(0xfe),
              }
          }
@@ -137,12 +137,13 @@ lazy_static! {
     pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
         column_position: 0,
         color_code: ColorCode::new(Color::Blue, Color::Black),
-        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) }, //Pointer to the actual vga Buffer
+        //It's always at 0xb8000
     });
 }
 
-//Modified println macroes using the static WRITER
-
+//Modified println macros using the static WRITER
+//TODO: understand this
 #[macro_export]
 macro_rules! print {
     ($($arg:tt)*) => ($crate::vga_buffer::_print(format_args!($($arg)*)));
