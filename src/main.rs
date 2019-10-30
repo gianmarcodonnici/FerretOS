@@ -5,6 +5,7 @@
 #![reexport_test_harness_main = "test_main"] //test usually run in main, but we dont use main
 
 mod vga_buffer;
+mod serial;
 
 //This function is called on panic.
 use core::panic::PanicInfo;
@@ -27,7 +28,7 @@ pub extern "C" fn _start() -> ! {   //use the C calling convention
 //Test framework
 #[cfg(test)]
 fn test_runner(tests: &[&dyn Fn()]) {   //Rust collects all tests and passes them to this function
-    println!("Running {} tests", tests.len());
+    serial_println!("Running {} tests", tests.len());
     for test in tests {
         test();
     }
@@ -55,7 +56,7 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
 // Test testing (heh)
 #[test_case]
 fn test_test() {
-    print!("Testing tests... ");
+    serial_print!("Testing tests... ");
     assert_eq!(1,1);
-    println!("-PASSED-")
+    serial_println!("-PASSED-")
 }
