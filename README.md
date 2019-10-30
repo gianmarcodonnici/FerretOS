@@ -4,6 +4,9 @@ Hobby OS written in Rust.
 To build a bootable kernel image:
 cargo bootimage
 
+To build and run an image on qemu:
+cargo xrun
+
 Tools used:
 - Rust
 - bootimage crate
