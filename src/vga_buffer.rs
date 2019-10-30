@@ -136,7 +136,7 @@ use spin::Mutex;    //use a mutex to make the static writer mutable
 lazy_static! {
     pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
         column_position: 0,
-        color_code: ColorCode::new(Color::Blue, Color::Black),
+        color_code: ColorCode::new(Color::White, Color::Black),
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) }, //Pointer to the actual vga Buffer
         //It's always at 0xb8000
     });
