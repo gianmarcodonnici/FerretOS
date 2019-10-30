@@ -17,3 +17,6 @@ TODO
 
 # TODO List
 - Write a bootloader (preferably UEFI)
+
+# Tutorials used
+ - os.phil-opp.com
