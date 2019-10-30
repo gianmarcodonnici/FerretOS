@@ -7,11 +7,22 @@
 mod vga_buffer;
 mod serial;
 
-//This function is called on panic.
+//This function is called on panic, while not in test mode
 use core::panic::PanicInfo;
+#[cfg(not(test))]
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     println!("PANIC {}", _info);
+    loop {}
+}
+
+//Panic function, in test mode
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    serial_println!("-FAILED-");
+    serial_println!("ERROR: {}\n", info);
+    exit_qemu(QemuExitCode::Failed);
     loop {}
 }
 
