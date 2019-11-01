@@ -7,6 +7,9 @@ cargo bootimage
 To build and run an image on qemu:
 cargo xrun
 
+to run test
+cargo xtest
+
 Tools used:
 - Rust
 - bootimage crate
