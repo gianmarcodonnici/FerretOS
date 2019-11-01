@@ -45,8 +45,8 @@ struct ScreenChar {
 }
 
 //VGA buffer always is 80x25
-const BUFFER_HEIGHT: usize = 25;
-const BUFFER_WIDTH: usize = 80;
+pub const BUFFER_HEIGHT: usize = 25;
+pub const BUFFER_WIDTH: usize = 80;
 
 //The actual text buffer
 use volatile::Volatile; // used for the buffer, so the compiler doesnt optimize away writes
@@ -117,6 +117,11 @@ impl Writer {
              }
          }
      }
+
+     pub fn read_char(row: usize, col: usize) -> char {
+         //TODO: Check if read is in bounds
+         char::from(WRITER.lock().buffer.chars[row][col].read().ascii_character)
+     }
 }
 
 //Rust write macro support
@@ -159,35 +164,4 @@ macro_rules! println {
 pub fn _print(args: fmt::Arguments) {
     use core::fmt::Write;
     WRITER.lock().write_fmt(args).unwrap();
-}
-
-#[cfg(test)]
-use crate::{serial_print, serial_println};
-
-#[test_case]
-fn test_println_single() {
-    serial_print!("test_println_single...");
-    println!("test_println test");
-    serial_println!(" -PASSED-");
-}
-
-#[test_case]
-fn test_println_many() {
-    serial_print!("test_println_many...");
-    for _ in 0..400 {
-        println!("test_println_many test");
-    }
-    serial_println!(" -PASSED-")
-}
-
-#[test_case]
-fn test_println_check_output() {
-    serial_print!("test_println_check_output...");
-    let s = "lorem ipsum dolor amet";
-    println!("{}",s);
-    for (i,c) in s.chars().enumerate() {
-         let screen_char = WRITER.lock().buffer.chars[BUFFER_HEIGHT - 2][i].read();
-         assert_eq!(char::from(screen_char.ascii_character), c);
-    }
-    serial_println!(" -PASSED-")
 }
