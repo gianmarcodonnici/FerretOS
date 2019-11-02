@@ -12,6 +12,10 @@ pub mod serial;
 pub mod vga_buffer;
 pub mod interrupts;
 
+pub fn init() {
+    interrupts::init_idt();
+}
+
 pub fn test_runner(tests: &[&dyn Fn()]) {
     serial_println!("Running {} tests", tests.len());
     for test in tests {
