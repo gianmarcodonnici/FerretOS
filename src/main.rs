@@ -27,7 +27,6 @@ pub extern "C" fn _start() -> ! {   //use the C calling convention
     println!("Hello World");
 
     ferret_os::init();
-    x86_64::instructions::interrupts::int3(); // new
 
     #[cfg(test)] // Run test if in test mode
     test_main();
