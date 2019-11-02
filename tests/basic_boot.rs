@@ -5,9 +5,11 @@
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
+use ferret_os::{println, serial_print, serial_println};
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
+    ferret_os::init();
     test_main();
 
     loop {}
@@ -19,7 +21,6 @@ fn panic(info: &PanicInfo) -> ! {
 }
 
 // VGA Tests
-use ferret_os::{println, serial_print, serial_println};
 
 #[test_case]
 fn test_println_single() {
@@ -46,5 +47,14 @@ fn test_println_check_output() {
          let screen_char = ferret_os::vga_buffer::Writer::read_char(ferret_os::vga_buffer::BUFFER_HEIGHT - 2,i);
          assert_eq!(screen_char, c);
     }
+    serial_println!(" -PASSED-")
+}
+
+//Interrupt tests
+
+#[test_case]
+fn test_breakpoint_exception() {
+    serial_print!("test_breakpoint_exception...");
+    x86_64::instructions::interrupts::int3();
     serial_println!(" -PASSED-")
 }
