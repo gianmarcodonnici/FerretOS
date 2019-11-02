@@ -2,9 +2,19 @@
 // CPU Exception handling
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 use crate::println;
+use lazy_static::lazy_static;
 
-pub fn init_idt() {    //Create idt
-    let mut idt = InterruptDescriptorTable::new();
+lazy_static! {
+    static ref IDT: InterruptDescriptorTable = {
+        let mut idt = InterruptDescriptorTable::new();
+        idt.breakpoint.set_handler_fn(breakpoint_handler);
+        idt
+    };
+}
+
+
+pub fn init_idt() {    //Create idt and load it
+    IDT.load();
 }
 
 extern "x86-interrupt" fn breakpoint_handler(stack_frame: &mut InterruptStackFrame) {
