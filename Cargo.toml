@@ -5,14 +5,15 @@ authors = ["Gianmarco Donnici <gianmarco.donnici@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-bootloader = "0.8.0"
+bootloader = "0.8.2"
 volatile = "0.2.6"
 spin = "0.5.2"
 x86_64 = "0.7.5"
-uart_16550 = "0.2.0"
+uart_16550 = "0.2.1"
+pic8259_simple = "0.1.1"
 
 [dependencies.lazy_static]
-version = "1.0"
+version = "1.4"
 features = ["spin_no_std"]
 
 [package.metadata.bootimage]
