@@ -12,7 +12,7 @@ use core::panic::PanicInfo;
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     println!("PANIC {}", _info);
-    loop {}
+    ferret_os::hlt_loop();
 }
 
 //Panic function, in test mode
@@ -24,12 +24,13 @@ fn panic(info: &PanicInfo) -> ! {
 
 #[no_mangle]    //don't mangle, the linker will look for a function named _start
 pub extern "C" fn _start() -> ! {   //use the C calling convention
-    println!("Hello World");
+    println!("Boot Start");
 
     ferret_os::init();
 
     #[cfg(test)] // Run test if in test mode
     test_main();
-    println!("Didn't crash and burn, good!");
-    loop {}
+    println!("Boot End");
+    println!("Entering HLT loop");
+    ferret_os::hlt_loop();
 }

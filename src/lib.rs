@@ -15,10 +15,19 @@ pub mod gdt;
 
 pub fn init() {
     gdt::init();
-
+    println!("GDT initialized");
     interrupts::init_idt();
+    println!("IDT initialized");
     unsafe { interrupts::PICS.lock().initialize() };
+    println!("PICS initialized");
     x86_64::instructions::interrupts::enable();
+    println!("Interrupts enabled");
+}
+
+pub fn hlt_loop() -> ! { //hlt (sleep) function
+    loop {
+        x86_64::instructions::hlt();
+    }
 }
 
 pub fn test_runner(tests: &[&dyn Fn()]) {
@@ -33,7 +42,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
     serial_println!(" -FAILED-\n");
     serial_println!("Error: {}\n", info);
     exit_qemu(QemuExitCode::Failed);
-    loop {}
+    hlt_loop();
 }
 
 /// Entry point for `cargo xtest`
@@ -42,7 +51,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
 pub extern "C" fn _start() -> ! {
     init();
     test_main();
-    loop {}
+    hlt_loop();
 }
 
 #[cfg(test)]
