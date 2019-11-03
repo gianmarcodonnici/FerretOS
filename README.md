@@ -20,6 +20,7 @@ TODO
 
 # TODO List
 - Write a bootloader (preferably UEFI)
+- Handle more cpu exceptions
 
 # Tutorials used
  - os.phil-opp.com
