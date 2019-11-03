@@ -1,12 +1,12 @@
 
-// CPU Exception handling
+// CPU Exception and interrupt handling
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 use crate::println;
 use crate::print;
 use crate::gdt;
 use lazy_static::lazy_static;
 
-lazy_static! {
+lazy_static! {  //IDT interrupt handlers are set here
     static ref IDT: InterruptDescriptorTable = {
         let mut idt = InterruptDescriptorTable::new();
         idt.breakpoint.set_handler_fn(breakpoint_handler);
@@ -24,27 +24,26 @@ pub fn init_idt() {    //Create idt and load it
     IDT.load();
 }
 
+//Exception and Interrupt handlers
+
 //Breakpoint exception
 extern "x86-interrupt" fn breakpoint_handler(stack_frame: &mut InterruptStackFrame) {
     // extern because interrupt handlers have a special calling convention
-    println!("EXCEPTION: BREAKPOINT\n {:#?}", stack_frame);
+    println!("\nEXCEPTION: BREAKPOINT\n {:#?}", stack_frame);
 }
 
 //Double fault exception
 extern "x86-interrupt" fn double_fault_handler(stack_frame: &mut InterruptStackFrame,
         _error_code: u64) {
-    println!("EXCEPTION: DOUBLE FAULT\n{:#?}", stack_frame);
+    println!("\nEXCEPTION: DOUBLE FAULT\n{:#?}", stack_frame);
     crate::hlt_loop();
 }
 
 //Timer Interrupt
 extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: &mut InterruptStackFrame)
 {
-    print!(".");
-
-    unsafe {
-        PICS.lock().notify_end_of_interrupt(InterruptIndex::Timer.as_u8());
-    }
+    //Do nothing
+    pic_eoi();
 }
 
 //PIC
@@ -59,7 +58,7 @@ pub static PICS: spin::Mutex<ChainedPics> =
 
 #[derive(Debug, Clone, Copy)]
 #[repr(u8)]
-pub enum InterruptIndex {
+pub enum InterruptIndex { //List of interrupt indices
     Timer = PIC_1_OFFSET,
 }
 
@@ -70,6 +69,12 @@ impl InterruptIndex {
 
     fn as_usize(self) -> usize {
         usize::from(self.as_u8())
+    }
+}
+
+fn pic_eoi() { //End of interrupt notifier
+    unsafe {
+        PICS.lock().notify_end_of_interrupt(InterruptIndex::Timer.as_u8());
     }
 }
 
