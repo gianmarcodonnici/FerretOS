@@ -40,7 +40,7 @@ impl ColorCode {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(C)]  //Use C ordering, rust ordering is undefined
 struct ScreenChar {
-    ascii_character: u8,
+    pub ascii_character: u8,
     color_code: ColorCode,
 }
 
