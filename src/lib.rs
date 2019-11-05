@@ -11,6 +11,7 @@ use core::panic::PanicInfo;
 pub mod io_ports;
 pub mod serial;
 pub mod vga_buffer;
+pub mod keyboard;
 pub mod interrupts;
 pub mod gdt;
 

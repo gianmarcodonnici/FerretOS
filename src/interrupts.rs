@@ -53,10 +53,12 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(
 {
     use x86_64::instructions::port::Port;
     use crate::io_ports;
+    use crate::keyboard;
 
     let mut port = Port::new(io_ports::KEYBOARD);
     let scancode: u8 = unsafe {port.read()};
-    print!("{}", scancode);
+    let key = keyboard::get_char(scancode);
+    print!("{}", key);
     pic_eoi(InterruptIndex::Keyboard);
 }
 
