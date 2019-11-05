@@ -2,11 +2,11 @@
 use uart_16550::SerialPort;
 use spin::Mutex;
 use lazy_static::lazy_static;
+use crate::io_ports;
 
 lazy_static! {
     pub static ref SERIAL1: Mutex<SerialPort> = {
-        //0x3F8 is the standard port number for the first serial interface
-        let mut serial_port = unsafe { SerialPort::new(0x3F8) };
+        let mut serial_port = unsafe { SerialPort::new(io_ports::SERIAL1) };
         serial_port.init();
         Mutex::new(serial_port)
     };

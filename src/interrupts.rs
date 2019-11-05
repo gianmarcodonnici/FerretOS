@@ -51,7 +51,12 @@ extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: &mut InterruptSt
 extern "x86-interrupt" fn keyboard_interrupt_handler(
     _stack_frame: &mut InterruptStackFrame) 
 {
-    print!("k");
+    use x86_64::instructions::port::Port;
+    use crate::io_ports;
+
+    let mut port = Port::new(io_ports::KEYBOARD);
+    let scancode: u8 = unsafe {port.read()};
+    print!("{}", scancode);
     pic_eoi(InterruptIndex::Keyboard);
 }
 
