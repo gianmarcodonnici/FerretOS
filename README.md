@@ -13,10 +13,15 @@ cargo xtest
 Tools used:
 - Rust
 - bootimage crate
+- cargo-xbuild crate
 - QEMU
 
 ## Setting up the dev environment:
-TODO
+Run:
+cargo install cargo-xbuild
+cargo install bootimage
+
+Make sure you are using rust nightly
 
 # TODO List
 - Write a bootloader (preferably UEFI)
