@@ -18,8 +18,9 @@ Tools used:
 
 ## Setting up the dev environment:
 Run:
-cargo install cargo-xbuild
-cargo install bootimage
+ - cargo install cargo-xbuild
+ - cargo install bootimage
+ - rustup component add llvm-tools-preview
 
 Make sure you are using rust nightly
 
