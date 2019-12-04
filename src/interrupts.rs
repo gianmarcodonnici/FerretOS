@@ -43,7 +43,6 @@ extern "x86-interrupt" fn double_fault_handler(stack_frame: &mut InterruptStackF
 //Timer Interrupt
 extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: &mut InterruptStackFrame)
 {
-    print!(".");
     pic_eoi(InterruptIndex::Timer);
 }
 
@@ -53,12 +52,11 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(
 {
     use x86_64::instructions::port::Port;
     use crate::io_ports;
-    use crate::keyboard;
 
     let mut port = Port::new(io_ports::KEYBOARD);
-    let bytes: u8 = unsafe {port.read()};
-    let key = keyboard::get_char_from_bytes(bytes);
-    print!("{}", key);
+    let byte: u8 = unsafe {port.read()};
+    //let key = keyboard::ScancodeSet2::get_key_press_from_byte(byte).character;
+    //print!("{}", key);
     pic_eoi(InterruptIndex::Keyboard);
 }
 

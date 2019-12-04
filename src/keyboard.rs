@@ -1,36 +1,129 @@
-use pc_keyboard::{Keyboard, ScancodeSet1, DecodedKey, layouts, KeyEvent, KeyState};
-use spin::Mutex;
-use lazy_static::lazy_static;
-
-const ERROR_CHAR: char = '!';
-
-//PS/2 Keyboard object
-lazy_static! {
-    static ref KEYBOARD: Mutex<Keyboard<layouts::Us104Key, ScancodeSet1>> =
-        Mutex::new(Keyboard::new(layouts::Us104Key, ScancodeSet1, pc_keyboard::HandleControl::Ignore));
+enum Keys {
+    AltLeft,
+    AltRight,
+    ArrowDown,
+    ArrowLeft,
+    ArrowRight,
+    ArrowUp,
+    BackSlash,
+    Backspace,
+    BackTick,
+    BracketSquareLeft,
+    BracketSquareRight,
+    CapsLock,
+    Comma,
+    ControlLeft,
+    ControlRight,
+    Delete,
+    End,
+    Enter,
+    Escape,
+    Equals,
+    F1,
+    F2,
+    F3,
+    F4,
+    F5,
+    F6,
+    F7,
+    F8,
+    F9,
+    F10,
+    F11,
+    F12,
+    Fullstop,
+    Home,
+    Insert,
+    Key1,
+    Key2,
+    Key3,
+    Key4,
+    Key5,
+    Key6,
+    Key7,
+    Key8,
+    Key9,
+    Key0,
+    Menus,
+    Minus,
+    Numpad0,
+    Numpad1,
+    Numpad2,
+    Numpad3,
+    Numpad4,
+    Numpad5,
+    Numpad6,
+    Numpad7,
+    Numpad8,
+    Numpad9,
+    NumpadEnter,
+    NumpadLock,
+    NumpadSlash,
+    NumpadStar,
+    NumpadMinus,
+    NumpadPeriod,
+    NumpadPlus,
+    PageDown,
+    PageUp,
+    PauseBreak,
+    PrintScreen,
+    ScrollLock,
+    SemiColon,
+    ShiftLeft,
+    ShiftRight,
+    Slash,
+    Spacebar,
+    Tab,
+    Quote,
+    WindowsLeft,
+    WindowsRight,
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+    H,
+    I,
+    J,
+    K,
+    L,
+    M,
+    N,
+    O,
+    P,
+    Q,
+    R,
+    S,
+    T,
+    U,
+    V,
+    W,
+    X,
+    Y,
+    Z,
+    HashTilde,
+    PrevTrack,
+    NextTrack,
+    Mute,
+    Calculator,
+    Play,
+    Stop,
+    VolumeDown,
+    VolumeUp,
+    WWWHome,
+    PowerOnTestOk,    
 }
 
-//PS/2 Keyboard scancode translator
-pub fn generate_key_event(byte_read: u8) -> KeyEvent {
-    let mut keyboard = KEYBOARD.lock();
-    match keyboard.add_byte(byte_read).unwrap() {
-        Some(key_event) => return key_event,
-        None => panic!("key event generation failed"),
-    }
+struct Key {
+    make_code: u8,
+    break_code: u8,
+    key: Keys,
+    ascii_char: u8,
+    ascii_shift_char: u8,
 }
 
-pub fn key_event_to_char(key_event: KeyEvent) -> char {
-    if key_event.state == KeyState::Up {
-        return ' ';
-    }
-
-    let mut keyboard = KEYBOARD.lock();
-    match keyboard.process_keyevent(key_event).unwrap() {
-        DecodedKey::Unicode(key) => return key,
-        DecodedKey::RawKey(_key) => return ERROR_CHAR,
-    }
-}
-
-pub fn get_char_from_bytes(bytes: u8) -> char {
-    key_event_to_char(generate_key_event(bytes))
+struct Keyboard {
+    keys: [Key;115]
 }

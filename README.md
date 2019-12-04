@@ -28,6 +28,7 @@ Make sure you are using rust nightly
 - Write a bootloader (preferably UEFI)
 - Handle more cpu exceptions
 - APIC
+- PS/2 Keyboard
 
 # Tutorials used
  - os.phil-opp.com
